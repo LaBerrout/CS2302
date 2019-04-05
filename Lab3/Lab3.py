@@ -5,8 +5,10 @@ Assignment: Lab #3
 Instructor: Dr. Olac Fuentes
 T.A.:
 Date of last modification: 03/11/2019
-Purpose: 
+Purpose: Binary Search Tree 
 """
+import time
+
 class BST(object):
     # Constructor
     def __init__(self, item, left=None, right=None):  
@@ -100,8 +102,11 @@ for a in A:
 
 #InOrderD(T,'')
 
+#****************************************** My Code ******************************************
+#1) Display the bst as the figure
 
-#iterative search
+
+#2) iterative search
 def Search(T,k,level):
 	if T is None:
 		print("Item not found")
@@ -116,12 +121,23 @@ def Search(T,k,level):
 		print("Item ", T.item,"level:" ,level)
 		return Search(T.left,k,level+1)
 
-print("Iterative Search: ")
+print("2) Iterative Search: ")
 Search(T,10,0)
 print()
+Search(T,11,0)
+print()
+Search(T,70,0)
+print()
+start = time.time()
+Search(T,150,0)
 
-#Build a balanced tree
+print()
+
+#3) Build a balanced tree
 B = [10, 12, 15, 20, 30, 60, 84, 85, 90,100]
+B2 = [10, 12, 15, 20, 30]
+B3 = [10, 12, 15, 20, 30, 60, 84, 85, 90,100, 120, 150, 154, 156, 160, 184, 200, 201, 215, 230]
+
 def BalanceTree(List,T):
 	if len(List)==1:
 		return
@@ -130,8 +146,6 @@ def BalanceTree(List,T):
 		middle = List[num//2-1]
 		left = List[0:(num//2)]
 		right = List[(num//2):len(List)]
-		#print(left)
-		#print(right)
 		T= BST(0)
 		T.item = middle
 		T.left = BalanceTree(left,T.left)
@@ -139,12 +153,18 @@ def BalanceTree(List,T):
 	return T
 
 Tnew = BST(0)
-print("Balanced BST from list: ")
+print("3) Balanced BST from list: ")
 InOrderD(BalanceTree(B,Tnew),' ')
 print()
+InOrderD(BalanceTree(B2,Tnew),' ')
+print()
 
+InOrderD(BalanceTree(B3,Tnew),' ')
+
+print()
 	
-#Extracting the elements from a tree to a sorted list
+#4) Extracting the elements from a tree to a sorted list
+
 Tother = BST(0)
 Tother = BalanceTree(B,Tnew)
 C = []
@@ -154,65 +174,55 @@ def Createlist(T,list):
 		list.append(T.item)    #insert root
 		Createlist(T.right,list)
 	return list
-print("List from BST: ")
+print("4) List from BST: ")
+
 print(Createlist(Tother,C))
+
 print()
 
-#Print the elements ordered by depth
-def PrintbyDepth(T,i):
-	if T is not None:
-		print("Keys at depth ", i, ": ",end = ' ')
-		print(T.item)
-		PrintbyDepth(T.left,i+1)
-		PrintbyDepth(T.right,i+1)
-	
-PrintbyDepth(T,0)
-InOrderD(T,' ')
-'''
-def Search(T,k,level):
+#5) Print the elements ordered by depth
+def PrintinDepth(T,depth):
 	if T is None:
-		print("Item not found")
-		return -1
-	if T.item==k:
-		print("Item", T.item,"found in level:" ,level)
-		return level
-	if T.item<k:
-		print("Item ", T.item,"level:" ,level)
-		return Search(T.right,k,level+1)
+		return
 	else:
-		print("Item ", T.item,"level:" ,level)
-		return Search(T.left,k,level+1)
+		if depth==0:
+			print(T.item,end=' ')
+		else: 
+			PrintinDepth(T.left,depth-1)
+			PrintinDepth(T.right,depth-1)
 
-InOrder(T)
+def PrintbyDepth(T,i):
+	lent = LenTree(T)
+	if i>lent:
+		return
+	else:
+		print("Keys at depth ", i,": ",end=' ')
+		PrintinDepth(T,i)
+		print()
+		PrintbyDepth(T,i+1)
+
+
+def LenTree(T):
+	lent = 0
+	if T is None:
+		return lent
+	else:
+		lent+=1
+		lent +=LenTree(T.left)
+		#LenTree(T.right)
+	return lent
+
+
+print("5) Print by Depth: ")
+#PrintinDepth(T,3)
+PrintbyDepth(Tother,0)
 print()
-InOrderD(T,'')
+start = time.time()
+
+PrintbyDepth(T,0)
+
+end = time.time()
+print("Time: ",end-start)
 print()
-
-print(SmallestL(T).item)
-print(Smallest(T).item)
-
-FindAndPrint(T,40)
-FindAndPrint(T,110)
-
-n=60
-print('Delete',n,'Case 1, deleted node is a leaf')
-T = Delete(T,n) #Case 1, deleted node is a leaf
-InOrderD(T,'')
-print('####################################')
-
-n=90      
-print('Delete',n,'Case 2, deleted node has one child')      
-T = Delete(T,n) #Case 2, deleted node has one child
-InOrderD(T,'')
-print('####################################')
-
-n=70      
-print('Delete',n,'Case 3, deleted node has two children') 
-T = Delete(T,n) #Case 3, deleted node has two children
-InOrderD(T,'')
-
-n=40      
-print('Delete',n,'Case 3, deleted node has two children') 
-T = Delete(T,n) #Case 3, deleted node has two children
-InOrderD(T,'')
-'''
+#print("Length: ",LenTree(T))
+#InOrderD(T,' ')
